@@ -216,10 +216,11 @@
 #define CONFIG_CMD_EXT4
 
 
-/*The partition format and file system of ext4*/
+/*bootmenu*/
 #define CONFIG_CMD_BOOTMENU
 #define CONFIG_MENU
-
+#define CONFIG_MENU_SHOW
+#define CONFIG_AUTOBOOT_KEYED
 
 #define COUNTER_FREQUENCY               27000000 /* FIXME, need to know what impact it will cause */
 
