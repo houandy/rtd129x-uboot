@@ -215,6 +215,12 @@
 #define CONFIG_PARTITION_UUIDS
 #define CONFIG_CMD_EXT4
 
+
+/*The partition format and file system of ext4*/
+#define CONFIG_CMD_BOOTMENU
+#define CONFIG_MENU
+
+
 #define COUNTER_FREQUENCY               27000000 /* FIXME, need to know what impact it will cause */
 
 #define CONFIG_VERSION			"0000"
