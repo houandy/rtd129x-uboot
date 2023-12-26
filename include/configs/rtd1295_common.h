@@ -284,6 +284,7 @@
 /* Library support */
 #define CONFIG_LZMA
 #define CONFIG_LZO
+#define CONFIG_LZO
 
 #ifdef CONFIG_CMD_NET
 	/* Eth Net */
