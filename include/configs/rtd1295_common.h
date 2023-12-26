@@ -39,7 +39,7 @@
  */
 #ifdef CONFIG_NAS_ENABLE 
 #define NAS_ENABLE			1	/* Enable NAS features */
-/* #define NAS_DUAL			1   */ /* Enable NAS dual boot on eMMC */
+//#define NAS_DUAL			1	/* Enable NAS dual boot on eMMC */
 #endif
 
 #ifdef NAS_ENABLE
@@ -94,40 +94,85 @@
  * Environment setup
  */
 
-#define CONFIG_BOOTDELAY	0
+#define CONFIG_BOOTDELAY	3
 
 #define CONFIG_ENV_OVERWRITE
 
+/* BPI */
 #define CONFIG_BOOTCOMMAND \
-	"bootr"
+	"run boot_normal"
 
 #define CONFIG_KERNEL_LOADADDR	0x03000000
 #define CONFIG_ROOTFS_LOADADDR	0x02200000
 #define CONFIG_RESCUE_ROOTFS_LOADADDR 	0x02200000
-#define CONFIG_LOGO_LOADADDR	0x02002000      /* reserved ~2M */
-#define CONFIG_FDT_LOADADDR	0x02100000      /* reserved 64K */
+#define CONFIG_LOGO_LOADADDR	0x02002000      //reserved ~2M
+#define CONFIG_FDT_LOADADDR	0x02100000      //reserved 64K
 #define CONFIG_BLUE_LOGO_LOADADDR 0x30000000
-#ifdef CONFIG_NAS_ENABLE
-#define CONFIG_FW_LOADADDR	0x01b00000  /* reserved 4M */
+#if 1 /*def CONFIG_NAS_ENABLE*/
+#define CONFIG_FW_LOADADDR	0x01b00000  //reserved 4M BPI kernel 4.4
 #else
-#define CONFIG_FW_LOADADDR	0x0f900000  /* reserved 4M */
+#define CONFIG_FW_LOADADDR	0x0f900000  //reserved 4M BPI kernel 4.9 / 4.1
 #endif
 
 #define CONFIG_EXTRA_ENV_SETTINGS                   \
+    "ethact=r8168#0\0" \
+    "ethaddr=1C:88:79:5A:06:FB\0" \
+    "ethprime=r8168#0\0" \
+    "gatewayip=192.168.100.254\0" \
+    "ipaddr=192.168.100.1\0" \
+    "netmask=255.255.255.0\0" \
+    "serverip=192.168.100.2\0" \
+    "wlan_RTL8192E hwaddr=1C:88:79:5A:06:FA\0" \
+    "wlan_RTL8192E pwrdiffHT20=fefefefefefefefefefefefefefe\0" \
+    "wlan_RTL8192E pwrdiffOFDM=dededededededededededededede\0" \
+    "wlan_RTL8192E pwrlevelCCK_A=1b1b1b1b1b1b1b1b1b1b1b1b1b1b\0" \
+    "wlan_RTL8192E pwrlevelCCK_B=1f1f1f1f1f1f1f1f1f1f1f1f1f1f\0" \
+    "wlan_RTL8192E pwrlevelHT40_1S_A=2323232323232323232323232323\0" \
+    "wlan_RTL8192E pwrlevelHT40_1S_B=2727272626262626262626262626\0" \
+    "wlan_RTL8192E ther=33\0" \
+    "wlan_RTL8192E xcap=41\0" \
+    "wlan_RTL8822B hwaddr=1C:88:79:5A:06:FD\0" \
+    "wlan_RTL8822B pwrdiff_5G_20BW1S_OFDM1T_A=000000000f0f0f0f0f0f00000000\0" \
+    "wlan_RTL8822B pwrdiff_5G_20BW1S_OFDM1T_B=0101010100000000000000000000\0" \
+    "wlan_RTL8822B pwrdiff_5G_80BW1S_160BW1S_A=00000000000000000000c0c0c0c0\0" \
+    "wlan_RTL8822B pwrdiff_5G_80BW1S_160BW1S_B=00000000000000000000b0b0b0b0\0" \
+    "wlan_RTL8822B pwrlevel5GHT40_1S_A=00000000000000000000000000000000000000000000000000000000000000000000001e1e1e1e1e1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1b1b1b1b1b1b1b1b181818181818181818181818181818181818181818181818181818181818181818181818181818181717171717171717161616161616161615151515151515151313131313131313141414141414141416161616161616161616161616161616161919191919191919171717171717171700000000000000000000000000000000000000\0" \
+    "wlan_RTL8822B pwrlevel5GHT40_1S_B=00000000000000000000000000000000000000000000000000000000000000000000001f1f1f1f1f1e1e1e1e1e1e1e1e1f1f1f1f1f1f1f1f1c1c1c1c1c1c1c1c16161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161313131313131313131313131313131314141414141414141a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1818181818181818171717171717171700000000000000000000000000000000000000\0" \
+    "wlan_RTL8822B ther=24\0" \
+    "wlan_RTL8822B xcap=54\0" \
+    "scriptaddr=0x1500000\0" \
+    "device=sd\0" \
+    "partition=0:1\0" \
+    "kernel=uImage\0" \
+    "checksd=fatinfo ${device} 0:1\0" \
+    "boot_normal=if run checksd ; then echo Boot from SD ; setenv partition 0:1 && run set_sdbootargs && gosd ; run set_emmcbootargs && bootr ; else echo Boot from eMMC ; mmc init 0 ; if run checkqnap; then setenv partition 0:1 && run set_qnapbootargs && bootr ; else setenv partition 0:1 && run set_emmcbootargs && bootr ; fi ; fi ;\0" \
+    "bootmenu_delay=30\0" \
+    "checkqnap=ext4load mmc 0:2 0x6000000 /boot/rootfs_ext.tgz.cksum\0" \
    "kernel_loadaddr=0x03000000\0"                  \
    "fdt_loadaddr=0x02100000\0"                  \
    "fdt_high=0xffffffffffffffff\0"                  \
    "rootfs_loadaddr=0x02200000\0"                   \
+   "initrd_high=0xffffffffffffffff\0"				\
    "rescue_rootfs_loadaddr=0x02200000\0"                   \
    "audio_loadaddr="STR(CONFIG_FW_LOADADDR)"\0"                 \
    "blue_logo_loadaddr="STR(CONFIG_BLUE_LOGO_LOADADDR)"\0"      \
    "mtd_part=mtdparts=rtk_nand:\0"                  \
+	"console_args=earlycon=uart8250,mmio32,0x98007800 fbcon=map:0 console=ttyS0,115200 loglevel=7\0" \
+	"sdroot_args=rootwait root=/dev/mmcblk1p2 rw\0" \
+	"set_sdbootargs=setenv bootargs ${console_args} ${sdroot_args}\0" \
+	"emmcroot_args=root=/dev/mmcblk0p1 rootfstype=squashfs rootwait\0" \
+	"set_emmcbootargs=setenv bootargs ${console_args} ${emmcroot_args}\0" \
+	"qnaproot_args=console=ttyS0,115200n8 root=/dev/ram0 init=/linuxrc rw pcbinfo=2321 uboot_build_date=201804271506 initrd=0x02200000,20082465\0" \
+	"set_qnapbootargs=setenv bootargs ${qnaproot_args}\0" \
+
 
 /* Pass open firmware flat tree */
 #define CONFIG_CMD_BOOTI
-#define CONFIG_GZIP_DECOMPRESS_KERNEL_ADDR	0x0c000000	/* GZIPED kernel decompress addr */
-#define CONFIG_GZIP_KERNEL_MAX_LEN		0x01400000	/* Set MAX size to 20M after decompressed */
-/* #define CONFIG_ARMV8_SWITCH_TO_EL1 */
+#define CONFIG_GZIP_DECOMPRESS_KERNEL_ADDR	0x0c000000	// GZIPED kernel decompress addr
+#define CONFIG_GZIP_KERNEL_MAX_LEN		0x01400000	// Set MAX size to 20M after decompressed
+/*
+//#define CONFIG_ARMV8_SWITCH_TO_EL1
+*/
 #define CONFIG_OF_LIBFDT    		1
 #define CONFIG_OF_STDOUT_VIA_ALIAS	1
 
@@ -135,7 +180,9 @@
 #define CONFIG_CMDLINE_EDITING
 #define CONFIG_AUTO_COMPLETE
 
-/* 1:cache disable   0:enable */
+/*
+// 1:cache disable   0:enable
+*/
 #if 0 
 	#define CONFIG_SYS_ICACHE_OFF
 	#define CONFIG_SYS_DCACHE_OFF
@@ -151,11 +198,12 @@
 
 #define CONFIG_SYS_LONGHELP		/* undef to save memory */
 #define CONFIG_SYS_HUSH_PARSER	/* use "hush" command parser */
+#define CONFIG_HUSH_PARSER
 #define CONFIG_SYS_CBSIZE		640
 
 /* Print Buffer Size */
 #define CONFIG_SYS_PBSIZE		(CONFIG_SYS_CBSIZE + sizeof(CONFIG_SYS_PROMPT) + 16)
-#define CONFIG_SYS_MAXARGS		16
+#define CONFIG_SYS_MAXARGS		32
 
 /* Boot Argument Buffer Size */
 #define CONFIG_SYS_BARGSIZE		(CONFIG_SYS_CBSIZE)
@@ -170,7 +218,7 @@
 #define CONFIG_SYS_LOAD_ADDR		0x03000000
 
 /* Use General purpose timer 2 */
-#define CONFIG_SYS_TIMER		0     /* FPGA */
+#define CONFIG_SYS_TIMER		0     //FPGA
 #define CONFIG_SYS_HZ			1000
 
 /*
@@ -178,7 +226,9 @@
  *
  * The stack sizes are set up in start.S using the settings below
  */
-/* stack size is setup in linker script 1MB */
+/*
+//stack size is setup in linker script 1MB
+*/
 #ifdef CONFIG_USE_IRQ
 	#define CONFIG_STACKSIZE_IRQ	(4 << 10)	/* IRQ stack */
 	#define CONFIG_STACKSIZE_FIQ	(4 << 10)	/* FIQ stack */
@@ -191,20 +241,24 @@
  */
 #define CONFIG_NR_DRAM_BANKS		1
 #define CONFIG_SYS_SDRAM_BASE		0x00000000
-#define CONFIG_SYS_RAM_DCU1_SIZE	0x20000000		/* 512MB */
+#define CONFIG_SYS_RAM_DCU1_SIZE	0x20000000		//512MB
 
 /* GIC-400 setting */
 #define CONFIG_GICV2
-#define GICD_BASE			0xff011000      /* FIXME, all these register should be reviewed */
-#define GICC_BASE			0xff012000      /* FIXME, all these register should be reviewed */
+#define GICD_BASE			0xff011000      // FIXME, all these register should be reviewed
+#define GICC_BASE			0xff012000      // FIXME, all these register should be reviewed
 
 
 
-/* if the relocation is enabled, the address is used to be the stack at very beginning. */
+/*
+//if the relocation is enabled, the address is used to be the stack at very beginning.
+*/
 #define CONFIG_SYS_INIT_SP_ADDR     0x00100000
 
 
-/* 1:cache disable   0:enable */
+/*
+// 1:cache disable   0:enable
+*/
 #if 0
 	#define CONFIG_SYS_ICACHE_OFF
 	#define CONFIG_SYS_DCACHE_OFF
@@ -225,7 +279,7 @@
 	#define CONFIG_SYS_TEXT_BASE		0x00020000
 #endif
 
-#define CONFIG_SYS_PROMPT       		"Realtek> "
+#define CONFIG_SYS_PROMPT       		"XJY> "
 
 /* Library support */
 #define CONFIG_LZMA
@@ -234,18 +288,11 @@
 #ifdef CONFIG_CMD_NET
 	/* Eth Net */
 	#define CONFIG_CMD_PING
-	/* #define CONFIG_CMD_TFTPPUT */
+/*
+	//#define CONFIG_CMD_TFTPPUT
+*/
 	#define CONFIG_RTL8168
-	/* 
-	 * TFTP speed up, by enable ip fragment, and set default blksize to MTU.
-	 * Use `env set tftpblocksize 16384` to override blksize, max CONFIG_NET_MAXDEFRAG.
-	 * MUST: CONFIG_TFTP_BLOCKSIZE <= CONFIG_NET_MAXDEFRAG
-	 */
-	#define CONFIG_IP_DEFRAG
-	/* ip fragment, CONFIG_NET_MAXDEFRAG , default 16384, max 65536 */
-	/* #define CONFIG_NET_MAXDEFRAG		16384 */
-	#define CONFIG_TFTP_BLOCKSIZE		1468
-	#define CONFIG_UDP_CHECKSUM
+	#define CONFIG_TFTP_BLOCKSIZE		400
 
 	/* Network setting */
 	#define CONFIG_ETH_PRIME			r8168#0
@@ -256,15 +303,32 @@
 	#define CONFIG_NETMASK				255.255.255.0
 #endif
 
+/* BPI */
+#define CONFIG_CMD_MEMINFO
+#define CONFIG_CMD_GPIO
+#define CONFIG_CMD_ECHO
+#define CONFIG_CMD_RUN
+#define CONFIG_CMD_IMPORTENV
+#define CONFIG_CMD_EXPORTENV
+#define CONFIG_EFI_PARTITION
+#define CONFIG_CMD_GPT
+#define CONFIG_PARTITION_UUIDS
+#define CONFIG_FS_EXT4
+#define CONFIG_CMD_EXT4
+
 /* USB Setting */
 #define CONFIG_CMD_FAT
 #define CONFIG_FAT_WRITE
 #define CONFIG_CMD_RTKMKFAT
-/* #define CONFIG_PARTITIONS */
+/*
+//#define CONFIG_PARTITIONS
+*/
 #define CONFIG_DOS_PARTITION
 #define CONFIG_EFI_PARTITION
 #define CONFIG_SYS_USB_XHCI_MAX_ROOT_PORTS 5
-/* #define CONFIG_DM_USB */
+/*
+//#define CONFIG_DM_USB
+*/
 
 /*Total USB quantity*/
 #define CONFIG_USB_MAX_CONTROLLER_COUNT 4
@@ -277,15 +341,17 @@
 #define USB_PORT0_TYPE_C_RD_GPIO_NUM 34
 /* Port 1, xhci u2 host */
 #define USB_PORT1_GPIO_TYPE "GPIO"
-#define USB_PORT1_GPIO_NUM  19
+#define USB_PORT1_GPIO_NUM  11
 /* Port 2, ehci u2 host */
 #define USB_PORT2_GPIO_TYPE "GPIO"
-#define USB_PORT2_GPIO_NUM  19
+#define USB_PORT2_GPIO_NUM  12
 /* Port 3, xhci u3 host only for 1296 */
 #define USB_PORT3_GPIO_TYPE "NO_DEFINE"
 #define USB_PORT3_GPIO_NUM 0
 
-/* for none define GPIO */
+/*
+// for none define GPIO
+*/
 /* define 1296 USB GPIO control */
 /* Port 0, DRD, TYPE_C */
 #define RTD1296_USB_PORT0_GPIO_TYPE "ISOGPIO"
@@ -293,8 +359,8 @@
 #define RTD1296_USB_PORT0_TYPE_C_RD_GPIO_TYPE "ISOGPIO"
 #define RTD1296_USB_PORT0_TYPE_C_RD_GPIO_NUM 34
 /* Port 1, xhci u2 host */
-#define RTD1296_USB_PORT1_GPIO_TYPE "ISOGPIO"
-#define RTD1296_USB_PORT1_GPIO_NUM 31
+#define RTD1296_USB_PORT1_GPIO_TYPE "GPIO"
+#define RTD1296_USB_PORT1_GPIO_NUM 56
 /* Port 2, ehci u2 host */
 #define RTD1296_USB_PORT2_GPIO_TYPE "ISOGPIO"
 #define RTD1296_USB_PORT2_GPIO_NUM  31
@@ -307,26 +373,26 @@
 #define CONFIG_G_DNL_PRODUCT_NUM   0x4e40
 #define CONFIG_G_DNL_MANUFACTURER   "Realtek"
 
-/* #define CONFIG_ANDROID_BOOT_IMAGE */
+/*
+//#define CONFIG_ANDROID_BOOT_IMAGE
+*/
 #define CONFIG_FASTBOOT_FLASH
-#define CONFIG_USB_FASTBOOT_BUF_ADDR   0x28000000 /* CONFIG_SYS_LOAD_ADDR */
-#define CONFIG_USB_FASTBOOT_BUF_SIZE   0x6400000 /* 100MB */
+#define CONFIG_USB_FASTBOOT_BUF_ADDR   0x28000000//CONFIG_SYS_LOAD_ADDR
+#define CONFIG_USB_FASTBOOT_BUF_SIZE   0x6400000 //100MB
 #define FASTBOOT_FW_IMG_UPDATE_ADDR    0x30000000
-#define FASTBOOT_FW_IMG_UPDATE_MAX_SIZE 0x6400000 /* 100MB */
+#define FASTBOOT_FW_IMG_UPDATE_MAX_SIZE 0x6400000 //100MB
 #define FASTBOOT_SPARSE_IMAGE_ADDR     0x36400000
-#define FASTBOOT_SPARSE_IMAGE_MAX_SIZE  0x6400000 /* 100MB */
+#define FASTBOOT_SPARSE_IMAGE_MAX_SIZE  0x6400000 //100MB
 #define FASTBOOT_TAR_BUFFER_ADDR       0x3C800000
-#define FASTBOOT_TAR_BUFFER_SIZE         0x400000 /* 4MB */
+#define FASTBOOT_TAR_BUFFER_SIZE         0x400000 //4MB
 
 /* Factory */
 #define CONFIG_SYS_FACTORY
 #define PANEL_CONFIG_FROM_FACTORY_PANEL_BIN
 
 /* GPIO */
-#define CONFIG_CMD_GPIO
 #define CONFIG_REALTEK_GPIO
-#define CONFIG_INSTALL_GPIO_NUM    		106
-#define CONFIG_LED_RED_GPIO_NUM    		98
+#define CONFIG_INSTALL_GPIO_NUM    		8
 #define CONFIG_HDMITx_HPD_IGPIO_NUM		6
 
 /* I2C */
@@ -337,8 +403,13 @@
 
 /* Auto detect sink*/
 #define CONFIG_SYS_AUTO_DETECT
-#define CONFIG_HDMITX_MODE				 1 /* 0:Always OFF, 1: Always ON, 2: Auto */
-#define CONFIG_DEFAULT_TV_SYSTEM    	25 /* 1080P_60 */
+#define CONFIG_HDMITX_MODE				 1 // 0:Always OFF, 1: Always ON, 2: Auto
+/* drivers/logo_disp/rtk_rpc.h */
+#ifdef BPI
+#define CONFIG_DEFAULT_TV_SYSTEM    	25 //1080P_60
+#else
+#define CONFIG_DEFAULT_TV_SYSTEM    	13 //720P_60
+#endif
 
 /* If partition table */
 #ifndef CONFIG_PARTITIONS
@@ -352,8 +423,10 @@
 #define CONFIG_SYS_I2C_FRAM
 #define CONFIG_SYS_EEPROM_PAGE_WRITE_DELAY_MS 7
 
-/* enable key burn function */
-/* #define CONFIG_CMD_KEY_BURNING */
+/* enable key burn fnction */
+/*
+//#define CONFIG_CMD_KEY_BURNING
+*/
 
 /********* RTK CONFIGS ************/
 #define CONFIG_BSP_REALTEK
