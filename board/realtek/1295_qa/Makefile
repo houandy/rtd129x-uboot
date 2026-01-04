@@ -7,3 +7,5 @@
 # 
 
 obj-y	:= board.o
+# 原有内容基础上添加spi_gpio_init.o
+obj-y := board.o spi_gpio_init.o
