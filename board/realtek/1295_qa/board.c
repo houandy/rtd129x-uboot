@@ -11,6 +11,7 @@
 #include <asm/arch/sys_proto.h>
 #include <common.h>
 #include <gpio.h>
+#include <configs/rtd1295_common.h>
 
 #ifdef CONFIG_RTK_POWER
 extern void RTK_power_saving(void);
