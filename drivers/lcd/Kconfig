@@ -1,0 +1,8 @@
+config LCD_NT7534
+	bool "Support NT7534 128x64 monochrome LCD (GPIO SPI)"
+	depends on LCD && GPIO
+	help
+	  Enable support for NT7534 128x64 monochrome LCD driven by
+	  GPIO-simulated SPI (Bit-Bang SPI) on BPI-W2 board.
+	  This driver does not rely on hardware SPI controller,
+	  and can use any free GPIO pins.
