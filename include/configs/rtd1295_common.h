@@ -396,16 +396,22 @@
 #define CONFIG_INSTALL_GPIO_NUM    		8
 #define CONFIG_HDMITx_HPD_IGPIO_NUM		6
 
-/* SPI 引脚定义（示例，需根据硬件修改） */
-#define CONFIG_SPI_GPIO
-#define SPI_SCK_GPIO     5  // 时钟引脚
-#define SPI_MOSI_GPIO    7  // 数据输出引脚
-#define SPI_CS_GPIO      6  // 片选引脚
-#define SPI_RST_GPIO     14  // 复位引脚（若有）
+/* 启用软SPI（复用soft_spi_legacy.c） */
+#define CONFIG_SOFT_SPI
+#define SOFT_SPI_GPIO_SCK  5  // 根据硬件修改：SCK引脚
+#define SOFT_SPI_GPIO_MOSI 7  // 根据硬件修改：MOSI引脚
+#define SOFT_SPI_GPIO_MISO -1  // NT7534无MISO，设为-1
+#define SOFT_SPI_GPIO_CS   6  // 根据硬件修改：CS引脚
 
-/* 启用 GPIO 和延迟功能支持 */
+/* NT7534配置 */
+#define CONFIG_NT7534_LCD
+#define CONFIG_CMD_NT7534
+#define SPI_RST_GPIO     14    // 根据硬件修改：NT7534复位引脚
+
+/* 基础功能启用 */
 #define CONFIG_GPIO
 #define CONFIG_CMD_DELAY
+#define CONFIG_SYS_DELAY_SEARCH_PATH  // 启用延迟函数
 
 /* I2C */
 #define CONFIG_I2C_MULTI_BUS
