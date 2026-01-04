@@ -9,8 +9,6 @@
  */
 #include <common.h>
 #include <asm/arch/sys_proto.h>
-#include <gpio.h>
-#include <configs/rtd1295_common.h>
 
 #ifdef CONFIG_RTK_POWER
 extern void RTK_power_saving(void);
@@ -103,32 +101,4 @@ u32 get_board_rev(void)
 	revision = (uint)simple_strtoul(CONFIG_VERSION, NULL, 16);
 
 	return revision;
-}
-
-// 初始化SPI相关GPIO
-void nt7534_spi_gpio_init(void)
-{
-    // 配置SCK为输出（SPI时钟）
-    gpio_request(NT7534_SPI_SCK, "spi_sck");
-    gpio_direction_output(NT7534_SPI_SCK, 0);  // 初始低电平
-
-    // 配置MOSI为输出（SPI数据发送）
-    gpio_request(NT7534_SPI_MOSI, "spi_mosi");
-    gpio_direction_output(NT7534_SPI_MOSI, 0);
-
-    // 配置CS为输出（片选，初始高电平无效）
-    gpio_request(NT7534_SPI_CS, "spi_cs");
-    gpio_direction_output(NT7534_SPI_CS, 1);
-
-    // 配置复位引脚（若有）
-    gpio_request(NT7534_RST, "lcd_rst");
-    gpio_direction_output(NT7534_RST, 1);  // 初始高电平（未复位）
-}
-
-// 在板级初始化函数中调用
-int board_init(void)
-{
-    // ... 其他初始化 ...
-    nt7534_spi_gpio_init();  // 初始化SPI GPIO
-    return 0;
 }
