@@ -6,6 +6,5 @@
 # Copyright (C) 2015 by Tom Ting <tom_ting@realtek.com>
 # 
 
-obj-y	:= board.o
 # 原有内容基础上添加spi_gpio_init.o
 obj-y := board.o spi_gpio_init.o
