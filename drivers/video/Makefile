@@ -52,5 +52,7 @@ obj-$(CONFIG_FORMIKE) += formike.o
 obj-$(CONFIG_LG4573) += lg4573.o
 obj-$(CONFIG_AM335X_LCD) += am335x-fb.o
 obj-$(CONFIG_VIDEO_PARADE) += parade.o
+# 新增：NT7534驱动编译规则
+obj-$(CONFIG_NT7534_LCD) += nt7534.o
 
 obj-${CONFIG_VIDEO_TEGRA124} += tegra124/
