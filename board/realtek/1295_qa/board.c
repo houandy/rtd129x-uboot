@@ -9,6 +9,7 @@
  */
 #include <common.h>
 #include <asm/arch/sys_proto.h>
+#include "spi_gpio_init.h"  // 新增：引入SPI GPIO初始化头文件
 
 #ifdef CONFIG_RTK_POWER
 extern void RTK_power_saving(void);
@@ -38,8 +39,18 @@ int checkboard(void)
  */
 int board_init(void)
 {
+	int ret;  // 新增：定义SPI初始化返回值变量
+
 	//gd->bd->bi_arch_number = MACH_TYPE_RTK_RTD1295;
 	/* boot param removed since ATAG is not used anymore*/
+
+	// 新增：SPI GPIO初始化逻辑
+	ret = spi_gpio_init();
+	if (ret != 0) {
+		printf("Board: SPI GPIO initialization failed! (ret=%d)\n", ret);
+	} else {
+		printf("Board: SPI GPIO initialization success!\n");
+	}
 
 	return 0;
 }
