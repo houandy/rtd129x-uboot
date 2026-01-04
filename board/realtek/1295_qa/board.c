@@ -9,7 +9,6 @@
  */
 #include <common.h>
 #include <asm/arch/sys_proto.h>
-#include <common.h>
 #include <gpio.h>
 #include <configs/rtd1295_common.h>
 
