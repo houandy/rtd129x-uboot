@@ -404,6 +404,7 @@
 #define SPI_RST_GPIO     14  // 复位引脚（若有）
 
 /* 启用 GPIO 和延迟功能支持 */
+#define CONFIG_GPIO
 #define CONFIG_CMD_DELAY
 
 /* I2C */
