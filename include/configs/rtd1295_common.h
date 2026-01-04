@@ -396,6 +396,16 @@
 #define CONFIG_INSTALL_GPIO_NUM    		8
 #define CONFIG_HDMITx_HPD_IGPIO_NUM		6
 
+/* SPI 引脚定义（示例，需根据硬件修改） */
+#define CONFIG_SPI_GPIO
+#define SPI_SCK_GPIO     5  // 时钟引脚
+#define SPI_MOSI_GPIO    7  // 数据输出引脚
+#define SPI_CS_GPIO      6  // 片选引脚
+#define SPI_RST_GPIO     14  // 复位引脚（若有）
+
+/* 启用 GPIO 和延迟功能支持 */
+#define CONFIG_CMD_DELAY
+
 /* I2C */
 #define CONFIG_I2C_MULTI_BUS
 #define CONFIG_REALTEK_I2C
