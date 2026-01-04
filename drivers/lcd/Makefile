@@ -1,0 +1,1 @@
+obj-$(CONFIG_LCD_NT7534) += nt7534.o
