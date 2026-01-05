@@ -1,0 +1,5 @@
+tasks:
+  - command: |
+      cd rtd129x-uboot
+      mkdir build
+      docker run --rm -i -t -v `pwd`:/build/ sinovoip/bpi-build-linux-4.4:ubuntu16.04 /bin/bash
